@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% block title %}Поиск изображения{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Левая панель -->
+        <div class="col-md-4 bg-light p-4 border-end">
+            <h4 class="mb-4">Параметры поиска</h4>
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <!-- Выбор метода поиска -->
+                <div class="mb-4">
+                    <label class="form-label">Метод поиска</label>
+                    <select class="form-select" name="method">
+                        <option value="pHash" {% if request.POST.method == 'pHash' %}selected{% endif %}>
+                            Перцептивный хэш
+                        </option>
+                        <option value="ED" {% if request.POST.method == 'ED' %}selected{% endif %}>
+                            Метод гистограмм
+                        </option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">Искомое изображение</label>
+                    <input type="file"
+                           class="form-control"
+                           name="search_image"
+                           accept="image/*"
+                           required>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">
+                        Максимальное расстояние: {{ request.POST.max_distance|default:5 }}
+                    </label>
+                    <input type="range"
+                           class="form-range"
+                           min="0"
+                           max="40"
+                           value="{{ request.POST.max_distance|default:5 }}"
+                           name="max_distance">
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col">
+                        <label class="form-label">Дата от</label>
+                        <input type="date"
+                               class="form-control"
+                               name="start_date"
+                               value="{{ request.POST.start_date }}">
+                    </div>
+                    <div class="col">
+                        <label class="form-label">Дата до</label>
+                        <input type="date"
+                               class="form-control"
+                               name="end_date"
+                               value="{{ request.POST.end_date }}">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">
+                    Найти
+                </button>
+            </form>
+        </div>
+
+        <!-- Правая панель -->
+        <div class="col-md-8 p-4">
+            <h4 class="mb-4">Результаты поиска</h4>
+
+            {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-danger">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+
+            {% if search_performed %}
+                <div class="alert alert-info mb-4">
+                    Метод: <strong>{{ method }}</strong> |
+                    Время поиска: <strong>{{ search_time|floatformat:3 }} сек</strong> |
+                    Найдено: <strong>{{ results|length }}</strong>
+                </div>
+
+                {% if results %}
+                <div class="row row-cols-1 row-cols-md-2 g-4">
+                    {% for result in results %}
+                    <div class="col">
+                        <div class="card h-100 shadow-sm">
+                            <img src="{{ media_prefix }}{{ result.path }}"
+                                 class="card-img-top"
+                                 style="height: 200px; object-fit: cover">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ result.title }}</h5>
+                                <div class="card-text">
+                                    <p class="text-muted small">
+                                        Расстояние: {{ result.distance|floatformat:2 }}<br>
+                                        Дата загрузки: {{ result.upload_time|date:"d.m.Y H:i" }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="alert alert-warning">
+                    Совпадений не найдено. Попробуйте:
+                    <ul class="mt-2">
+                        <li>Увеличить максимальное расстояние</li>
+                        <li>Расширить диапазон дат</li>
+                        <li>Использовать другой метод поиска</li>
+                    </ul>
+                </div>
+                {% endif %}
+            {% else %}
+                <div class="alert alert-info">
+                    Загрузите изображение и настройте параметры поиска
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

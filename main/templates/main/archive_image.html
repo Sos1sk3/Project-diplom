@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load tz %}
+
+{% block title %}Архив изображений{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h3 class="mb-4 border-bottom pb-2">Архивные изображения</h3>
+
+    {% if archived_images %}
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for image in archived_images %}
+        <div class="col">
+            <div class="card h-100 shadow">
+                <img src="{{ media_prefix }}{{ image.image_path }}"
+                     class="card-img-top"
+                     style="height: 200px; object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ image.title }}</h5>
+                    <div class="card-text">
+                        <span class="badge bg-secondary">Архив</span>
+                        <p class="text-muted small mt-2 mb-1">
+                            <i class="bi bi-calendar"></i>
+                            Архивировано: {{ image.upload_time|date:"d.m.Y H:i" }}
+                        </p>
+
+                        <form method="post" class="mt-3">
+                            {% csrf_token %}
+                            <input type="hidden" name="image_id" value="{{ image.id }}">
+
+                            <div class="mb-3">
+                                <label class="form-label small">Срок действия (дней):</label>
+                                <input type="number"
+                                       name="expiration_days"
+                                       class="form-control form-control-sm"
+                                       min="1"
+                                       max="365"
+                                       value="30"
+                                       required>
+                            </div>
+
+                            <div class="btn-group w-100" role="group">
+                                <button type="submit"
+                                        name="action"
+                                        value="restore"
+                                        class="btn btn-sm btn-outline-success">
+                                    <i class="bi bi-arrow-counterclockwise"></i> Восстановить
+                                </button>
+                                <button type="submit"
+                                        name="action"
+                                        value="delete"
+                                        class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-trash"></i> Удалить
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info mt-3">
+        <i class="bi bi-archive"></i> Архив пуст
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

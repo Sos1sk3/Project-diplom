@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ВКР{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        /* Базовые стили для всего документа */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        header {
+            background-color: #A3A380;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+
+        footer {
+            background-color: #A3A380;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        main {
+        padding: 30px 20px;
+        margin-bottom: 50px;
+        background-color: #EFEBCE; /* Фон всего центрального блока */
+        min-height: calc(100vh - 160px); /* Чтобы фон занимал всю высоту */
+        }
+
+        /* Стили для блоков контента */
+        .content {
+            background-color: #D6CE93;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 1200px;
+        }
+
+        /* Стили для заголовков */
+        h2 {
+            color: black;
+            font-size: 1.8rem;
+        }
+
+        p {
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+
+        /* Стиль для ссылки или кнопки */
+        .btn {
+            display: inline-block;
+            background-color: #EFEBCE;
+            color: black;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Добрый день, {{ request.session.username }}</h1>
+        <a href="{% url 'home' %}" class="btn">На главную </a>
+        <a href="{% url 'login' %}" class="btn" >Выйти</a>
+        <a href="{% url 'about' %}" class="btn" >Обратная связь</a>
+    </header>
+    <main>
+        <div class="content">
+            {% block content %}
+
+            {% endblock %}
+        </div>
+    </main>
+    <footer>
+        <p>© Дипломная работа, все права защищены</p>
+    </footer>
+</body>
+</html>

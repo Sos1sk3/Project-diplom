@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load tz %}
+
+{% block title %}Мои черновики{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Мои черновики</h2>
+
+    <div class="row">
+        {% for draft in drafts %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <img src="{{ media_prefix }}{{ draft.image_path }}"
+                     class="card-img-top"
+                     alt="{{ draft.title }}"
+                     style="max-height: 250px; object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ draft.title }}</h5>
+                    <div class="card-text">
+                        <div class="mb-2">
+                            <span class="badge bg-warning text-dark">Черновик</span>
+                            {% if draft.expiration_time %}
+                                <span class="badge {% if draft.expiration_time > now %}bg-success{% else %}bg-danger{% endif %}">
+                                    {% if draft.expiration_time > now %}
+                                        Действителен до: {{ draft.expiration_time|timezone:"Europe/Moscow"|date:"d.m.Y H:i" }}
+                                    {% else %}
+                                        Просрочен
+                                    {% endif %}
+                                </span>
+                            {% endif %}
+                        </div>
+                        <p class="text-muted small mb-1">
+                            Загружен: {{ draft.upload_time|timezone:"Europe/Moscow"|date:"d.m.Y H:i" }}
+                        </p>
+                        <p class="text-muted small">
+                            Хэш: <code>{{ draft.perceptual_hash }}</code>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                У вас нет черновиков
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

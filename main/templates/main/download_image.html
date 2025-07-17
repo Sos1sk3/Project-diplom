@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}Главная{% endblock %}
+
+{% block content %}
+<script>
+    // Скрипт для отображения поля срока действия только для черновиков
+    document.addEventListener('DOMContentLoaded', function() {
+        const statusSelect = document.getElementById('status');
+        const expirationGroup = document.getElementById('expiration-group');
+
+        function toggleExpirationField() {
+            expirationGroup.style.display =
+                (statusSelect.value === 'DR') ? 'block' : 'none';
+        }
+
+        statusSelect.addEventListener('change', toggleExpirationField);
+        toggleExpirationField(); // Инициализация при загрузке
+    });
+</script>
+
+<div class="container">
+    <h2>Загрузка изображения</h2>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="title">Название изображения:</label>
+            <input type="text" id="title" name="title" required>
+        </div>
+
+        <div class="form-group">
+            <label for="status">Статус:</label>
+            <select id="status" name="status" required>
+                <option value="PB">Опубликовано</option>
+                <option value="DR" selected>Черновик</option>
+            </select>
+        </div>
+
+        <!-- Новое поле для срока действия -->
+        <div class="form-group" id="expiration-group" style="display: none;">
+            <label for="expiration_days">Срок действия (дней):</label>
+            <input
+                type="number"
+                id="expiration_days"
+                name="expiration_days"
+                min="1"
+                max="365"
+                value="30"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="image">Изображение:</label>
+            <input type="file" id="image" name="image" accept="image/*" required>
+        </div>
+
+        <button type="submit">Загрузить</button>
+    </form>
+</div>
+{% endblock %}

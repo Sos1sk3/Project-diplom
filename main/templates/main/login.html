@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <title>Вход в систему</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #EFEBCE;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #D6CE93;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+
+        h2 {
+            text-align: center;
+            color: black; /* Зеленый заголовок */
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50; /* Зеленая кнопка */
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049; /* Более темный зеленый при наведении */
+        }
+
+        .alert {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            color: white;
+            text-align: center;
+        }
+
+        .alert.error {
+            background-color: #f44336; /* Красный цвет для ошибок */
+        }
+
+        .alert.success {
+            background-color: #4CAF50; /* Зеленый цвет для успехов */
+        }
+
+        .home-button {
+    width: 100%;
+    padding: 10px;
+    background-color: #EFEBCE;
+    color: black;
+    border: 2px solid #A3A380;  /* Новый бордер */
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 15px;
+    transition: all 0.3s ease; /* Плавные изменения при наведении */
+}
+
+.home-button:hover {
+    background-color: #DAD7B4; /* Изменение цвета при наведении */
+    border-color: #8B8C70;     /* Изменение цвета бордера */
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Вход в систему</h2>
+
+        <!-- Вывод сообщений об ошибках -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert error">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+            <div>
+                <label for="username">Имя пользователя:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div>
+                <label for="password">Пароль:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" class="home-button">Войти</button>
+        </form>
+
+
+
+
+    </div>
+
+</body>
+</html>

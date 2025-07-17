@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load tz %}
+
+{% block title %}Мои изображения{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Секция опубликованных изображений -->
+    <div class="mb-5">
+        <h3 class="mb-4 border-bottom pb-2">Опубликованные изображения</h3>
+
+        {% if published_images %}
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for image in published_images %}
+            <div class="col">
+                <div class="card h-100 shadow">
+                    <img src="{{ media_prefix }}{{ image.image_path }}"
+                         class="card-img-top"
+                         style="height: 200px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ image.title }}</h5>
+                        <div class="card-text">
+                            <span class="badge bg-success">Опубликовано</span>
+                            <p class="text-muted small mt-2 mb-0">
+                                <i class="bi bi-clock-history"></i>
+                                {{ image.upload_time|date:"d.m.Y H:i" }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="alert alert-info mt-3">
+            <i class="bi bi-info-circle"></i> Нет опубликованных изображений
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Секция черновиков -->
+    <div class="mt-5 pt-4 border-top">
+        <h3 class="mb-4 border-bottom pb-2">Черновики</h3>
+
+        {% if draft_images %}
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for image in draft_images %}
+            <div class="col">
+                <div class="card h-100 shadow">
+                    <img src="{{ media_prefix }}{{ image.image_path }}"
+                         class="card-img-top"
+                         style="height: 200px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ image.title }}</h5>
+                        <div class="card-text">
+                            <span class="badge bg-warning text-dark">Черновик</span>
+
+                            <!-- Добавленный блок с хэшем -->
+                            {% if image.perceptual_hash %}
+                            <p class="text-muted small mt-2 mb-1">
+                                <i class="bi bi-hash"></i>
+                                Хэш: {{ image.perceptual_hash }}
+                            </p>
+                            {% endif %}
+
+                            {% if image.expiration_time %}
+                            <p class="text-muted small mt-2 mb-1">
+                                <i class="bi bi-hourglass-split"></i>
+                                Истекает: {{ image.expiration_time|date:"d.m.Y H:i" }}
+                            </p>
+                            {% endif %}
+
+                            <div class="btn-group mt-2" role="group">
+                                <a href="{{ media_prefix }}{{ image.image_path }}"
+                                   class="btn btn-sm btn-outline-primary"
+                                   download>
+                                    <i class="bi bi-download"></i> Скачать
+                                </a>
+                                <a href="{% url 'delete_image' image.id %}"
+                                   class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-trash"></i> Удалить
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="alert alert-info mt-3">
+            <i class="bi bi-info-circle"></i> Нет изображений в черновиках
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Тестирование загрузки{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Тестирование массовой загрузки изображений</h2>
+
+    <form method="post" enctype="multipart/form-data" class="mb-5">
+        {% csrf_token %}
+        <div class="card shadow">
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label">Выберите изображения для теста:</label>
+                    <input type="file"
+                           class="form-control"
+                           name="images"
+                           multiple
+                           accept="image/*"
+                           required>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-cloud-upload me-2"></i>Запустить тест
+                </button>
+            </div>
+        </div>
+    </form>
+
+    {% if results %}
+    <div class="card shadow">
+        <div class="card-body">
+            <h4 class="card-title mb-4">Результаты тестирования</h4>
+
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="alert alert-{% if results.success == results.total %}success{% else %}warning{% endif %}">
+                        <h5>Успешно обработано</h5>
+                        <div class="display-4">{{ results.success }}/{{ results.total }}</div>
+                    </div>
+                </div>
+
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <small class="text-muted">Общее время</small>
+                                    <div class="h3">{{ results.total_time }} сек</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <small class="text-muted">Среднее время</small>
+                                    <div class="h3">{{ results.avg_time }} сек</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    {% if results.errors %}
+                    <div class="alert alert-danger">
+                        <h5 class="alert-heading">Ошибки обработки:</h5>
+                        <div class="error-list">
+                            {% for error in results.errors %}
+                            <div class="mb-2">
+                                <div class="fw-bold">{{ error.file }}</div>
+                                <div class="text-muted small">{{ error.error }}</div>
+                                {% if debug %}
+                                <pre class="bg-dark text-white p-2 mt-1 small">{{ error.trace }}</pre>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .error-list {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+    pre {
+        border-radius: 5px;
+        font-size: 0.8em;
+    }
+    .display-4 {
+        font-size: 2.5rem;
+        font-weight: 300;
+        line-height: 1.2;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Опубликованные изображения{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Опубликованные изображения</h2>
+
+    <div class="row">
+        {% for image in images %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <img src="{{ media_prefix }}{{ image.image_path }}"
+                     class="card-img-top"
+                     alt="{{ image.title }}"
+                     style="max-height: 200px; object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ image.title }}</h5>
+                    <div class="card-text">
+                        <p class="mb-1">
+                            <i class="bi bi-person"></i>
+                            Автор: {{ image.user.username }}
+                        </p>
+                        <small class="text-muted">
+                            <i class="bi bi-clock"></i>
+                            Загружено: {{ image.upload_time|date:"d.m.Y H:i" }}
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                Нет опубликованных изображений
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
